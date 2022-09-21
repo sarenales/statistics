@@ -1,0 +1,376 @@
+---
+title: |
+  | LAB 1  (**SME**)
+  | Introduction to RStudio and  Rmarkdown 
+  |
+author: '**Name:** Silvia Arenales'
+date: |
+  | `r Sys.setlocale("LC_TIME", "C");format(Sys.Date(), "%B %d, %Y")`
+  |
+  |
+output:
+  html_document:
+    number_sections: yes
+    theme: united
+    highlight: espresso
+    toc: yes
+    toc_depth: 3
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+>  
+
+>   
+
+```{r setup, include=FALSE}
+# R commands inside chunck
+
+# Name of the chunck: setup
+# 
+
+# setting global options,
+# all the following chunks will be affected by these options
+knitr::opts_chunk$set(echo = TRUE,tidy=TRUE)
+# echo = TRUE, By default shows all the commands written inside the chuncks
+# tidy=TRUE, Whether to reformat code in a tidy way when displaying it
+
+
+```
+
+>    
+
+>  
+# Installing R and RStudio(in that order)  
+
+> Even if you use RStudio, you’ll still need to download R to your computer. RStudio helps you use the version of R that lives on your computer, but it doesn’t come with a version of R on its own.   
+
+> You can read how to do it in the following link: 
+[Hands-On Programming with R](https://rstudio-education.github.io/hopr/starting.html)
+
+>    
+
+# Rmarkdown and RStudio
+
+> This file you are working on is written in Rmarkdown(.Rmd) format because I want to write not only R commands but add some extra explanations to them. 
+
+> R Markdown is a format for writing reproducible, dynamic reports with R. Use it to
+embed R code and results into slideshows, pdfs, html documents, Word files and more. 
+
+> You can find how to work with R markdown in RStudio in the following file:
+[R Markdown Cheat Sheet](rmarkdown-cheatsheet.pdf){width=65%}
+
+
+> Look in that file for the answers of some questions about the .Rmd file you are working on:   
+
+> **QUESTION: When you compile this file, which is the format of the output file by default?**   
+>**ANSWER: ** #The format of the output file by default is R Markdown syntax.
+
+> **QUESTION: What do you need to do in order to include and execute R code in this file?** 
+>**ANSWER: ** #Embed R code that created output to include in the report and then replace ir with its output and transform the report into slideshow, pdf, html...
+
+> **QUESTION: If you only want to show the results not the code which parameter do you use in the corresponding chunk of code?** 
+>**ANSWER:** #You need to trandoem the report into a slideshow, pdf, html...
+
+> **QUESTION: Which is the extension of this file?** 
+>**ANSWER:**  #Pdf 
+
+
+# Basic commands in R or RStudio
+
+> You can review the slides of the chapter to see how to do it in RStudio using the menus in the upper pannel.
+
+> **Session>Set working directory>Choose Directory**  
+
+>   
+
+## Setting the working directory
+
+> If you want to know in which directory your files are saved:  
+
+```{r echo=TRUE, eval=TRUE, message=FALSE}
+# R commands inside chunck
+
+### Useful commands: getwd,setwd
+
+# Assign to the variable myWD your working directory
+### Write your commands where needed
+#myWD <- setwd("C:/Users/XXXX/Dropbox/informatica_segundo/sme/lab/lab1") # changed DONE 
+myWD <- NA
+# See what happens when you change that value
+## NOTICE that getwd() returns the current wd as a string, but setwd() sets wd and returns the value as a string.
+
+```
+
+>  
+
+> **QUESTION: In the header of the previous chunk there are some paremeters, can you explain their use?**   
+>**ANSWER:** #echo means whether to display code along with its results; eval whether to evaluate the code and include its results and message it is used to display messages.
+
+
+
+> **QUESTION: What is my working directory? **   
+> **ANSWER:** My working directory is `r myWD`
+
+>    
+
+## Information about the system and version of the program.
+
+>  
+
+```{r echo = FALSE}
+# R commands inside chunck
+
+### Useful command:
+
+sessionInfo()
+
+```
+
+> 
+
+## Installing and charging the libraries in memory. 
+
+> If a library is not already installed we must install it first. We will install the package corresponding to the 
+book "Using R for Introductory Statistics".  
+
+```{r, echo=TRUE, eval=TRUE, tidy=TRUE, message=FALSE}
+# R commands inside chunck
+
+### Commands to use: install, help
+### See the menu on the Packages window, the result of the actions in the menu will appear in the Console panel.
+
+### install.packages("UsingR")
+
+### NOTICE: the line above is commented because "UsingR" package was already installed succesfully.
+
+```
+
+>  **QUESTION: Who is the author of the book?**    
+>  **ANSWER:** The author of the book is `r packageDescription("UsingR")[4]`.
+
+> If the dataset is already included in a package, you only need to load that package.   
+  Load the package for the book "Using R for introductory Statistics" and have a look at the datasets included.   
+  Choose the dataset named "math"  and read its description in the help menu. 
+
+
+```{r echo=TRUE, eval=TRUE, message=FALSE, tidy=TRUE}
+# R commands inside chunck
+
+### NOTICE: CHANGE THE VALUE OF PARAMETER eval BEFORE COMPILING
+
+### Commands to use: library, data, help
+### Write your commands where needed:
+
+library("UsingR")             # load package for the book "Using R for introductory Statistics"
+data(package="UsingR")        # show only the datasets included in that library
+data(math,package="UsingR")   # load the dataset math in memory
+
+# which command? # look at the explanation about the math dataset in the help window
+  # help(data(math,package="UsingR"))
+
+### NOTICE that we commented the line above because otherwise a new .html would be opened on the default internet browser.
+
+# which command? # show the values of the dataset
+  math
+  
+```
+
+>  
+
+
+# Exercise {#statm}
+
+>  
+
+>  In case you have any doubt, you can look in the help menu or read the first two subsections of the section "The very basics" in the previous link: [Hands-On Programming with R](https://rstudio-education.github.io/hopr/starting.html)
+
+
+
+>Your cell-phone bill varies from month to month. The monthly amounts in
+dollars for the last year were    
+46 33 39 37 46 30 48 32 49 35 30 48
+
+
+
+>* 1. Enter this data into a variable called bill.  
+
+bill <- scan(text = "46 33 39 37 46 30 48 32 49 35 30 48")
+
+##bill<- {46; 33; 39; 37; 46; 30; 48; 32; 49 ; 35; 30; 48}
+
+>* 2. Use the sum function to find the amount you
+spent last year on the cell phone. 
+
+total<- sum(bill)
+
+>* 3. Associate data with their corresponding month  
+
+January <- bill[1]
+February<- bill[2]
+March <- bill[3]
+April<-bill[4]
+May<- bill[5]
+June<-bill[6]
+July<-bill[7]
+August<-bill[8]
+September<-bill[9]
+October<-bill[10]
+November<-bill[11]
+December<-bill[12]
+
+
+>* 4. What is the smallest amount you spent in a month? 
+
+# 33
+
+>* 5. That minimum corresponds to which month? 
+
+# November
+
+>* 6. What is the greatest amount you spent in a month? 
+
+# 49
+
+>* 7. That maximum corresponds to which month? 
+
+# September
+
+>* 8. How many data you have?
+
+total
+
+
+```{r echo=TRUE,eval=TRUE, tidy=TRUE, message=FALSE,results='asis',hold}
+# R commands inside chunck
+
+# (1) scan 
+bill <- scan(text = "46 33 39 37 46 30 48 32 49 35 30 48") # inline use
+cat("1. Last year's **bills** by month",bill,"\n")
+# 
+# (2) sum
+totalA <- sum(bill) # year's total amount
+cat("2. **Total amount** spent in the phone", totalA,"\n")
+
+# Value of the array  in sixth position 
+bill.6 <- bill[6]
+
+```
+
+>      
+
+> We can also write the answers outside the code chunk using the results we already have:  
+ The value of the bill in sixth position  is `r bill.6`      
+
+
+>  
+
+> **We can also create a table with our data**      
+
+>   
+```{r echo=TRUE,eval=TRUE, tidy=TRUE, message=FALSE,results='asis'}
+# R commands inside chunck
+#
+#(3) names,  naming data(column)
+library("kableExtra")
+names(bill) <- c("jan","feb","mar","apr","may","june","july","aug","sept","oct","nov","dic")
+print("Last year's **bills by month:** ")
+
+kable(t(bill))%>%
+  kable_styling()
+
+
+```
+
+
+>    
+
+
+```{r echo=TRUE,eval=TRUE, tidy=TRUE, message=FALSE,results='asis'}
+# R commands inside chunck
+#
+# (4) min
+Min.bill <- min(bill)
+cat("4. **Minimum** amount of a bill is ",Min.bill,"euros \n")
+#
+# (5) which
+Position.of.min <- which(bill==min(bill),arr.ind = TRUE)
+cat("5. Month(s) of minimum spent: ",names(Position.of.min))
+```
+
+>    
+
+
+```{r echo=TRUE,eval=TRUE, tidy=TRUE, message=FALSE,results='asis'}
+# R commands inside chunck
+#
+# (6) max
+Max.bill <- max(bill)
+cat("6. **Maximum** amount of a bill is ",Max.bill,"euros \n")
+#
+# (7) which
+Position.of.max <- which(bill==max(bill),arr.ind = TRUE)
+cat("7. Month(s) of maximum spent: ",names(Position.of.max))
+```
+
+
+>   
+
+```{r}
+# R commands inside chunck
+
+# (8) lenght
+
+
+```
+
+
+>    
+
+## Defining functions
+
+> As in any other programming languages you can also define functions in R.  
+
+> You will find some useful examples in the sections 2.3,2.4 and 2.5  in the previous link: [Hands-On Programming with R](https://rstudio-education.github.io/hopr/starting.html)
+
+> You can find it resumed in the following picture:   
+[Hands-On Programming with R. Parts of an R function](hopr_0106.png){width=25%}
+
+>   
+
+
+```{r echo=TRUE,eval=TRUE, tidy=TRUE, message=FALSE,results='asis'}
+# R commands inside chunck
+
+# Define a function to find the position of maximum value in an array
+
+
+
+
+```
+
+
+>    
+
+
+# Saving your work space   
+
+> Click on the  icon of the floppy disk   
+Choose a name for the file and save.   
+
+
+>  **QUESTION: Which is the extension of the file?**    
+> **ANSWER:** #It is the extension .Rmd
+
+
+
+
+# Recovering the last commands: Rhistory
+
+> If you want to recover the last commands or save them you can do it in the upper right window using the History option.  
+
+> Remember to clear all  entries in the History.   
+
+
+

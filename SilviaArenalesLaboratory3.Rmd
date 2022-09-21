@@ -1,0 +1,597 @@
+---
+title: | 
+  | SME. 3rd Laboratory 
+  |
+  | Data Analysis. Describing distributions with graphs and numbers.
+  |
+  |
+author: '**Name: Silvia Arenales** '
+date: |
+  |
+  | `r Sys.setlocale("LC_TIME", "C");format(Sys.Date(), "%B %d, %Y")`
+  |
+  | Table of contents
+  |
+output:
+  html_document:
+    highlight: espresso
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+    keep_tex: true
+---
+
+
+
+
+```{r setup, include=FALSE}
+# setting the options
+
+knitr::opts_chunk$set(echo = TRUE,tidy=TRUE)
+options() # printing all current options
+options(digits = 6) # number of digits to display
+
+library(moments)   # needed for finding the third and fourth  moments
+# Install if not already installed
+
+```
+
+>     
+
+  
+\newpage
+
+
+# Introduction to the analysis of data
+
+> In practice, any set of data is accompanied by background information that
+helps us understand the data. When you plan a statistical study or explore data
+from someone else’s work, ask yourself the following questions:  
+
+
+>1. **Why? What purpose** do the data have?  Do we hope to answer some specific
+questions? Do we want to draw conclusions about individuals other than
+those for whom we actually have data?  
+
+>2. **Who?** What **individuals** do the data describe? **How many** individuals appear
+in the data?   
+
+>3.  **What?** How many **variables** do the data contain?  What are the **exact definitions**
+of these variables? Some variables have units. Weights, for example,
+might be recorded in pounds, in thousands of pounds, or in kilograms. For
+these kinds of variables, you need to know the **unit of measurement**.    
+
+
+
+>   
+
+> Following the those criteria we are going to analyze the *car* dataset.  
+
+\pagebreak
+
+
+# Description of the *car* dataset  
+
+
+>    Depending on how you drive and what your typical commute looks like, you may want to compare how a vehicle fares in city versus highway mileage \footnote{You can read more information in: https://en.wikipedia.org/wiki/Fuel\_economy\_in\_automobiles}. 
+
+>1. If you are consistently in stop-and-go traffic, you want to find a car that uses the least gas in those situations.  
+
+
+>2. If you drive mainly on the highway, you can get up to double the city miles as cars typically use the least gas when driving at highway speeds. 
+
+
+> The Environmental Protection Agency \footnote{https://www3.epa.gov/} lists most such vehicles in its “two-seater” or 
+“mini-compact” categories. Table 1.10 gives the city and highway gas mileage for cars
+in these groups.
+(The mileages are for the basic engine and transmission combination for each car.)
+
+
+```{r figtable, echo=FALSE, fig.cap="Example from the book *Introduction to the Practice of Statistics*",out.width = '100%'}
+
+knitr::include_graphics("Tabla_cars2.png")
+
+```
+
+
+\newpage
+
+## Read the file and load the data into memory 
+
+
+>   Now we are going to read the external file *cars_mileage.csv* and load it into memory using a variable named *cars*. The file extension is *.csv*, a type that can be read also by any  spreadsheet. 
+
+
+```{r  } 
+## NOTICE: Set the working directory first. Where are your files?
+
+# Useful commands:  setwd, read.csv, length, names, dim, nrow and all that you know 
+# Write your commands below:
+
+
+cars <- read.csv("cars_mileage.csv",header=TRUE,sep = ",",
+                 stringsAsFactor=FALSE)
+# The use of stringsAsFactors parameter ensures that the "Type" variable 
+# can be referenced as a character string.
+# 
+
+
+
+# If we need to see some results of the code with  an explanation of the output
+cat("\n") # starts a new line
+
+
+# COMPLETE AND EXECUTE THE FOLLOWING INSTRUCTIONS:
+
+# FIND the names of the variables 
+data.names <- names(cars) # SAVE the value in the variable
+cat("The names of the variables in the dataset cars: ", data.names) # change
+
+# FIND the number of observations, use cat command to show the result
+
+# and SAVE the value in the variable
+data.Nobs <- nrow(cars)
+
+
+
+
+```
+
+
+>   
+
+\newpage
+
+
+
+##  First statistics 
+
+> As usual, we want to describe the distribution of the data.  
+
+> We have seen how to find statistics for one variable, but in this  file we have three and what we are going to do is to compare the values of the statistics of the continuous variables for each type of car.  
+
+> First, We wil split the dataset in two. One variable for the cars of type "T", TwoSeaters  
+and one variable for the cars of type "M",  MiniC.       
+
+
+
+>    
+
+```{r }
+## NOTICE: Useful commands:   dim, names, summary, unique, subset, length, cat and all that you know 
+
+# COMPLETE AND EXECUTE THE FOLLOWING INSTRUCTIONS:
+
+# FIND information about the dataset: summary
+cars.summary <- summary(cars)
+
+# FIND the different types of cars
+# and SAVE the value in the variable
+cars.types <- unique(cars$Type) # variable: Types of cars
+
+# Add and an explanation of the output
+cat("\n") # starts a new line
+cat("There are ",length(cars.types)," different types of cars: ",cars.types,"\n")
+
+
+# CREATE  two new datasets each  with one type of car only
+# subset
+TwoSeaters <- subset(cars,Type=="T")[-1]
+MiniC <- subset(cars,Type=="M")
+
+# How many variables do you have in dataset TwoSeaters?
+# Change the code in order to get only the continuous variables.
+
+# How many cars of each type?( command nrow)
+# and SAVE the values in the variables
+
+Ncars.type1 <- nrow(TwoSeaters)
+Ncars.type2 <- nrow(MiniC)
+
+# COMMANDS NEEDED TO ANSWER THE FOLLOWING QUESTIONS:
+
+# 
+
+
+```
+
+
+> **QUESTIONS:**    
+
+
+>1. How many variables are in the dataset? And which type are they?  (Qualitative,Quantitative) 
+
+
+
+
+> **Answer:** 34 types of cars and 2  .
+
+
+>2. Describe the categories in the qualitative variable
+
+
+
+> **Answer:** City
+
+
+>3. Which are the units of measure of the quantitative variables? 
+
+
+
+> **Answer:** 
+
+
+
+>4. Which statistics(measures) appear as result of the command summary?  
+
+
+> **Answer:** cars.summary
+
+
+
+>5. Which  measures of position appear?  
+
+> **Answer:** 34.
+
+
+>    
+
+> 6. How many variables do you have in dataset TwoSeaters?
+
+> **Answer:**    2.
+>   
+
+> 7. Which is the car that has the the best gas mileage for the  TwoSeaters?  
+
+> **Answer:** Honda Insight.
+
+
+>   
+
+\newpage
+
+### Compare the mean and the median(central tendency measures)
+
+> 8. What are the values of the mean and the median for the dataset *TwoSeaters*    
+
+> **Answer:**   City: Median: 17.5 and mean 18.2. Hwy: Median: 24.5 and mean 25.2.
+
+
+
+> 9. Do you think that the distribution is symmetric in both cases?    
+
+> **Answer:**   Yes, the distribution in both cases is symmetric.
+
+
+
+
+\newpage
+### Find some measures of dispersion for the quantitative variables
+
+
+
+
+```{r  }
+## NOTICE Useful commands:   var, sd, IQR and all that you know 
+
+# COMPLETE AND EXECUTE THE FOLLOWING INSTRUCTIONS:
+
+
+# FIND the variance for the cars of type Two seaters
+TwoS.var <- var(TwoSeaters[,data.names[2:3]])
+# Add and an explanation of the output
+cat("The variance of the variable gas consumption in the City is", TwoS.var[1,1],"\n")
+#cat("\n") # starts a new line
+
+# FIND the standard deviation
+TwoS.sd.City <- sd(TwoSeaters[,"City"])
+TwoS.sd.Hwy <- sd(TwoSeaters[,"Hwy"])
+# Add and an explanation of the output
+cat("The standard deviation of the variable gas consumption in the City is", TwoS.sd.City,"\n")
+#cat("\n") # starts a new line
+
+# FIND The interquartile range
+TwoS.IQR.City <- IQR(TwoSeaters[,"City"])
+TwoS.IQR.Hwy <- IQR(TwoSeaters[,"Hwy"])
+# Add and an explanation of the output
+cat("The IQR of the variable gas consumption in the City is", TwoS.IQR.City,"\n")
+#cat("\n") # starts a new line
+
+
+```
+
+
+>     
+
+\newpage
+
+### Find the outliers
+
+
+>  The IQR is used to detect outliers. The rule is that any value less than $Q_{1} - 1.5 IQR$ or greater than $Q_{3} + 1.5 IQR$ is an outlier.  
+
+> 10. Is there any outlier in the data?  
+
+>  **ANSWER:** Yes, the Honda is an outlier and the two Lamborginis.
+
+
+```{r }
+# WRITE here the code you need to find the outliers in the TwoSeaters group
+
+## NOTICE Useful commands:   IQR, fivenum, quantile and all that you know 
+
+# TwoSeaters
+fivenum(TwoSeaters[,"City"])
+# Q1, 1st quartile, 
+p025 <- 0.25
+TwoS.Q1.City <- quantile(TwoSeaters[,"City"],probs = p025,type = 7)
+# Q3, 3rd quartile,
+p075 <- 0.75
+TwoS.Q3.City <- quantile(TwoSeaters[,"City"],probs = p075,type = 7)
+
+# IQR, Interquartile range ?
+
+
+# Find first the values beyond which the observation is an outlier
+lower.bound <- TwoS.Q1.City - 1.5*TwoS.IQR.City 
+upper.bound <- TwoS.Q3.City + 1.5*TwoS.IQR.City 
+
+# and then find the index of the observations that are beyond the bounds
+outlier.index <- which(TwoSeaters$City>upper.bound,arr.ind = TRUE)
+TwoSeaters[outlier.index,]
+
+# MiniC 
+
+
+
+
+```
+
+
+>   
+
+> 11. How many observations can be outliers in that dataset?
+
+>  **ANSWER:** 7.
+
+
+
+> 12. Can you identify the outlier(s) in the table in the figure?    
+
+>  **ANSWER:** Yes,in the line 10, Honda Insight.
+
+
+>   
+
+
+\newpage
+
+## Graphical displays of univariate data
+
+
+### Histograms
+
+> Using the original dataset *cars*, draw the histogram of the gas consumption for the variables Highway and City. One histogram below the other.  
+
+>   
+
+```{r fig.height=10,fig.width=10}
+## NOTICE Useful commands:  hist, layout and all that you know 
+# select the data corresponding to each variable
+# draw the histograms
+
+
+layout(matrix(c(1,2),nrow = 2),c(1,1)) # 50% each
+hist(cars[,"Hwy"],freq = FALSE,xlim = c(0,75),
+     main = "Frequencies of gas consumption in the Highway",
+     xlab = "gas consumption in the Highway")
+
+hist(cars[,"City"],freq = FALSE,xlim = c(0,75),
+     main = "Frequencies of gas consumption in the City",
+     xlab = "gas consumption in the City")
+
+
+# ADD THE SIMBOL TRIANGLE IN BLUE IN THE POSITION OF  THE MEAN 
+# AND THE SIMBOLS + AND - IN THE POSITIONS +1 AND -1  STANDARD DEVIATION
+# TO EACH HISTOGRAM.
+# ....
+
+
+
+```
+
+
+
+> 
+
+\newpage
+
+### Box plots
+
+
+> We want to compare the variables in dataset two-seaters drawing boxplots for each.   
+
+> First, find the values you need for drawing the boxplot and then draw it
+
+
+```{r eval=FALSE}
+# NOTE: for executiong the code, change the value of parameter eval !!!
+
+## NOTICE Useful commands:  quantile, range, var, sd, median, fivenum, IQR and all that you know 
+
+# find the values create an array with them.
+# Substite NA in the commands with the name of array.
+# 
+
+
+# Values for variable City
+cat("TwoSeaters.City: minimum, lower-hinge, median, upper-hinge, maximum: ",
+    TwoSeaters["City"],
+    "\n")
+
+# Values for variable Hwy
+cat("TwoSeaters.Hwy: minimum, lower-hinge, median, upper-hinge, maximum: ",
+    TwoSeaters[,"Hwy"]),
+    "\n")
+
+
+
+```
+
+
+> Draw the box plot of the gas consumption comparing both in the Highway and the City.  
+
+>   
+
+
+```{r fig.height=10,fig.width=10}
+# draw the boxplot(s)
+#plot(City,type = "n")
+# useful R commands, boxplot,str,text,points,...
+
+
+layout(matrix(c(1,2),nrow = 1),c(1,1)) # 50% each
+
+City.boxp <- boxplot(TwoSeaters$City,
+                     ylim = c(0,max(TwoSeaters$City)+5),
+        main="Gas consumption in City",
+        plot = TRUE)
+text(1,fivenum(TwoSeaters[,"City"])[1] , "Min",pos = 4,
+     col = "blue",
+     cex = .8)
+text(1,fivenum(TwoSeaters[,"City"])[2] , "1stQ",pos = 2,
+     col = "red",
+     cex = .7)
+text(1,fivenum(TwoSeaters[,"City"])[3] ,
+     "MEDIAN",
+     col = "red",
+     cex = .8)
+text(1,fivenum(TwoSeaters[,"City"])[4] , "3rdQ",pos = 4,
+     col = "red",
+     cex = .7)
+text(1,fivenum(TwoSeaters[,"City"])[5] , "outlier",pos = 4,
+     col = "cyan",
+     cex = .8)
+points(1,fivenum(TwoSeaters[,"City"])[5],
+       col = "cyan",pch = 16
+       )
+text(1,City.boxp$stats[5]+0.05, "Max",pos = 2,
+     col = "blue",
+     cex = .8)
+
+
+Hwy.boxp <- boxplot(TwoSeaters$Hwy,
+                    ylim = c(0,max(TwoSeaters$Hwy)+5),
+        main="Gas consumption in Highway",
+        plot = TRUE)
+
+
+# ADD THE VALUE OF THE MEAN TO EACH BOXPLOT
+
+# ....
+
+
+# Do you think the graphics are correct?
+# What should you change?
+
+```
+
+
+>    
+
+
+
+> 13. If you save the result of the boxplot in a variable, what information do you have in the variable?
+
+>  **ANSWER:**  The gas consumption in teh city is 60, while in highway is 66.
+
+
+
+
+\newpage
+
+### Shape of the distribution
+
+>    You can also measure the skewness and kurtosis   
+
+
+#### Skewness
+
+>   
+
+> Intuitively, the skewness is a measure of symmetry.   
+
+>* As a rule, negative skewness indicates that the mean of the data values is less than the median, and the data distribution is left-skewed.   
+
+>* Positive skewness would indicate that the mean of the data values is larger than the median, and the data distribution is right-skewed.
+> See [skewness](http://www.r-tutor.com/elementary-statistics/numerical-measures/skewness)  
+
+>  
+
+> 14. After looking at the boxplots, do you think the distribution is symmetric?
+
+>  **ANSWER:** No, because there are some outliers.
+
+> 15. You have compared already the values of the mean and the median, did you reach the same conclusion?
+
+>  **ANSWER:** yes.
+
+>  
+
+
+#### Kurtosis
+
+>   
+
+> Intuitively, the excess kurtosis describes the tail shape of the data distribution.   
+
+>* The normal distribution has zero excess kurtosis and thus the standard tail shape. It is said to be mesokurtic.    
+
+>* Negative excess kurtosis would indicate a thin-tailed data distribution, and is said to be platykurtic.    
+
+>* Positive excess kurtosis would indicate a fat-tailed distribution, and is said to be leptokurtic.  
+
+>   
+
+
+```{r }
+#  useful R commands, skewness, kurtosis
+# FIND the values of the kurtosis and skewness for the variable City of the dataset TwoSeaters
+skewness(TwoSeaters$City)
+skewness(TwoSeaters$Hwy)
+ kurtosis(TwoSeaters$City)
+kurtosis(TwoSeaters$Hwy)
+
+```
+
+
+>   
+
+# R commands
+
+> Answer the following questions:  
+
+> 16. If you want to split a dataset what command can you use?    
+>  **ANSWER:** .split
+
+>  
+
+
+> 17. If you want to add text to a graphic which command should you use?  
+
+>  **ANSWER:** Putting:     main = " the text that you want", xlab = " the text that you want".
+
+
+>  
+
+> 18. And, if you want to add a symbol?  
+
+>  **ANSWER:** .symbols
+
+
+
+

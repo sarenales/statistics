@@ -1,0 +1,308 @@
+---
+title: |
+  |  LAB 2  (**SME**)
+  |  Showing the distribution of data.
+  |  
+author: '**Name:** Silvia Arenales'
+date: |
+  | `r Sys.setlocale("LC_TIME", "C");format(Sys.Date(), "%B %d, %Y")`
+  |
+  |
+output:
+  html_document:
+    number_sections: yes
+    theme: united
+    highlight: espresso
+    toc: yes
+    toc_depth: 3
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+header-includes:
+- \usepackage{xcolor}
+- \usepackage{amsmath}
+- \usepackage{amssymb}
+---
+
+
+```{r setup, include=FALSE}
+# R commands inside chunck
+
+# Name of the chunck: setup
+# 
+
+# setting global options,
+# all the following chunks will be affected by these options
+knitr::opts_chunk$set(echo = TRUE,tidy=TRUE,digits = 5)
+# echo = TRUE, By default shows all the commands written inside the chuncks
+# tidy=TRUE, Whether to reformat code in a tidy way when displaying it
+# digits = 5, number of digits to display, including decimals
+
+
+options() # printing all current options
+```
+
+
+
+# Introduction
+
+> We will use this laboratory to review some of the concepts saw in lesson 2: finding the distribution of the data using a table and showing it using a histogram. 
+
+>  You can find most of the code in example 4 in egela.   
+
+
+# Exercise
+
+>  
+
+## The dataset
+
+>   
+
+> We will create a dataset with five intervals of different size. In the first and fourth intervals the number of observations is 30 and in the second and third  the number of observations is 60. The fifth interval will have 10.
+
+> We will see how the  length(amplitude) of the interval affects its height in the histogram  while the number of observations inside is the same.    
+
+
+
+
+
+```{r echo=TRUE}
+# R commands inside chunck
+
+
+# the dataset with different interval lenghts
+
+I.bounds <- c(45,125,145,185,215,225) # Interval's bounds [L_i,L_i+1)
+Obs_by_interval <- c(30,60,60,30,10) # number of observations inside each interval, n_i
+N <- sum(Obs_by_interval) # Total number of observations
+Amplitude_I <- diff(I.bounds) # amplitudes of the intervals, a_i = L_(i+1) - L_(i)
+
+
+# the dataset with different interval lenghts
+
+# 
+# n1 <- Obs_by_interval[1] 
+# interval1 <- seq(from = I.bounds[1], to = I.bounds[2]-1, length.out= n1)
+# 
+# 
+# n2 <- Obs_by_interval[2]  # number of observations inside the interval
+# interval2 <- seq(from = I.bounds[2], to = I.bounds[3]-1, length.out= n2)
+# 
+# 
+# n3 <- Obs_by_interval[3] # number of observations inside the interval
+# interval3 <- seq(from = I.bounds[3], to = I.bounds[4]-1, length.out= n3)
+# 
+# 
+# n4 <- Obs_by_interval[4] # number of observations inside the interval
+# interval4 <- seq(from = I.bounds[4], to = I.bounds[5]-1, length.out= n4)
+# 
+# n5 <- Obs_by_interval[5] # number of observations inside the interval
+# interval5 <- seq(from = I.bounds[5], to = I.bounds[6], length.out= n5)
+# 
+# dataset.Ex <- c(interval1,interval2,interval3,interval4,interval5)
+
+# for loops in R?
+
+
+dataset.Ex <- NULL #empty
+
+for(i in 1:(length(Obs_by_interval)-1)){
+  n_i <- Obs_by_interval[i]
+  interval_i <- seq(from = I.bounds[i], to = I.bounds[i+1]-1, length.out= n_i)
+  dataset.Ex <- c(dataset.Ex, interval_i)
+}
+
+##    interval 5 is diferent
+
+dataset.Ex <- c(dataset.Ex,seq(from = I.bounds[5], to = I.bounds[6], length.out= Obs_by_interval[5]))
+
+```
+
+
+>   
+## Frequency table/density table  
+
+>     
+### Class marks  
+
+```{r echo=TRUE}
+# R commands inside chunck
+
+
+# class marks
+Half.p <- round(Amplitude_I/2,digits = 2)
+ClassMark <- I.bounds[-length(I.bounds)] + Half.p
+
+```
+
+>    
+
+### Absolute frequencies($n_{i}$) and Absolute Cumulative Frequencies($N_{i}$).   
+
+>    
+
+```{r echo=TRUE}
+# R commands inside chunck
+# table, cut, names, cbind, c, row.names,colnames
+
+# absolute frequencies, 
+
+table_int <- table(cut(dataset.Ex,breaks = I.bounds,
+          include.lowest = TRUE,right = FALSE)) # frequency table.
+table.Rownames <- names(table_int)
+table.Colnames <- c("Class.M","abs.Freq","cum.Freq","rel.Freq","Cum.Rel.Freq")
+
+Density_table1 <- cbind(ClassMark,as.numeric(table_int),cumsum(as.numeric(table_int)))
+row.names(Density_table1) <- table.Rownames
+colnames(Density_table1) <- table.Colnames[1:3]
+Density_table1
+```
+
+
+>            
+
+### Relative frequencies($f_{i}$) and cumulative relative frequencies.
+
+>    
+
+```{r echo=TRUE,eval=TRUE}
+# R commands inside chunck
+# cbind,cumsum,round
+
+
+Rel.Freq <- table_int/N
+ # rep(0,length(table_int))# find the value
+  
+Density_table2 <- cbind(Density_table1,round(Rel.Freq,digits=3),
+                        cumsum(Rel.Freq))
+colnames(Density_table2) <- table.Colnames
+Density_table2
+
+```
+
+>   
+
+>   
+
+```{r echo=TRUE,eval=TRUE, tidy=TRUE, message=FALSE,results='asis'}
+# R commands inside chunck
+#
+
+library("kableExtra")
+
+
+kable(Density_table2)%>%
+  kable_styling()
+```
+
+
+>     
+
+
+## Draw the histogram
+
+>   
+
+
+### Heights of the bins($d_{i} = \frac{f_{i}}{a_{i}}$)
+
+
+> The values of the **density** given by the histogram in R are the heights of the corresponding rectangles. $d_{i} = \frac{n_{i}}{a_{i}}$    
+
+
+>   
+
+```{r echo=TRUE}
+# R commands inside chunck
+
+# density/heights of the intervals
+
+Density_height.I <- Rel.Freq/Amplitude_I
+  #rep(0,length(table_int)) # find the value
+
+
+```
+
+>       
+
+
+
+
+
+## Histogram of the  distribution of the data drawn by R
+
+>          
+
+
+>  We can draw the histogram and save some values  of the histogram in a variable at the same time.    
+
+>     
+
+```{r echo=TRUE, fig.height=6,fig.width=6}
+# R commands inside chunck
+
+#  hist,text,mean,max,min,as.character
+
+Ex.hist <- hist(dataset.Ex,
+                breaks = I.bounds,
+                freq = FALSE,
+                include.lowest = TRUE, right = FALSE,
+                xlab = "dataset values",
+                ylab = "Density/height of the intervals",
+                xlim = c(min(dataset.Ex)-5,max(dataset.Ex)+5),
+                ylim = c(0,max(Density_height.I+0.025)))
+text(mean(dataset.Ex),max(Density_height.I+0.005),col = "red",
+    
+
+
+```
+
+
+>      
+
+
+# **QUESTIONS.**
+
+>**You can answer the questions just writing the resul you have found or you can let R write it for you as in the answer to the first question.   
+
+
+> 1. How many data do you have?    
+ **ANSWER:**  The total number of data is $N =`190`$   
+
+
+> 2. Which are the bounds of each interval?   
+ **ANSWER:**  Interval's bounds $[L_i,L_{i+1}) =$: ` [45,125), [125,145), [145,185), [185,215), [215,225]`   
+ 
+> 3. Find the class marks of each interval.   Which formula do you use?     
+ **ANSWER:** Density/height.
+
+> 4. Which is the amplitude of each interval?      
+ **ANSWER:** Amplitudes of the intervals: $a_{i} = L_{i+1} - L_{i} =$ ` 80, 20, 40, 30, 10`    
+
+
+> 5. Which R commands do you need for finding absolute frequency and the cumulative absolute frequency.     
+ **ANSWER:**
+
+> 6. How do you find the relative frequency?  Give the formula.     
+ **ANSWER:** relative_i/N.
+
+
+> 7. Which interval has the maximum height?      
+ **ANSWER:** The interval with the maximum height is (Hint: review the code of the first lab)
+
+> 8. Parameter of the chunk that you have to change if you don't want the code
+to show up.     
+**ANSWER:**  
+
+
+> 9. Parameter of the chunk that you have to change if you don't want the results
+to show up.     
+**ANSWER:**  
+
+
+> 10. Which information is contained inside variable Ex.hist?  Any of the results we have already found matches the contents in the variable? 
+**ANSWER:**   hist,text,mean,max,min,as.character
+
+
+

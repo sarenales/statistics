@@ -1,0 +1,290 @@
+---
+title: | 
+  | SME. 4th Laboratory 
+  |
+  | Bivariate Data. Linear Regression.
+  |
+  |
+author: '**Name:** Silvia Arenales Muñoz '
+date: |
+  |
+  | `r Sys.setlocale("LC_TIME", "C");format(Sys.Date(), "%B %d, %Y")`
+  |
+  | Table of contents
+  |
+output:
+  html_document:
+    highlight: espresso
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+    keep_tex: true
+---
+
+
+
+
+```{r setup, include=FALSE}
+# setting the options
+
+knitr::opts_chunk$set(echo = TRUE,tidy=TRUE)
+options() # printing all current options
+options(digits = 6) # number of digits to display
+
+library(moments)   # needed for finding the third and fourth  moments
+# Install if not already installed
+
+```
+
+>     
+# Describing relationships  with graphs and numbers
+
+>    
+
+```{r eval=FALSE}
+# Load the dataset if you are working on this file alone.
+
+cars <- read.csv("cars_mileage.csv",header=TRUE,sep = ",", stringsAsFactor=FALSE)
+
+TwoS <- cars[cars$Type=="T",]
+
+```
+
+
+
+>   
+
+## Graphical display of the relationship. Scatterplot
+
+>   
+
+> Draw a **scatterplot** of highway mileage $Y$ against
+city mileage $X$  using only  the two-seater cars.   
+
+>  
+
+```{r }
+### Useful commands and functions: plot and all that you know 
+### Write your commands below:
+
+names(TwoS)
+
+plot(TwoS$City,TwoS$Hwy,
+     main =  "Scatter plot",
+     xlab = "City",
+     ylab = "Hwy")
+
+
+```
+
+
+>  
+
+> Describe  the graphic: 
+
+>* Can you see any relationship? Describe it.  
+
+> **Answer:** Upper rigth, in the corner.  
+
+
+>* In the previous laboratory we saw that the Insight was an outlier,
+can you picture it in the graphic?  
+
+> **Answer:** It falls.
+
+
+>* What happens when you drop the outlier?   
+
+> **Answer:** ...It falls.
+
+```{r fig.height=10}
+# Draw both graphics side by side
+# On the left the graphic with the outlier and on the right the graphic without the outlier
+
+### Useful commands and functions: plot, cor and all that you know 
+### Write your commands below:
+
+
+ind <- which(TwoS$City==max(TwoS$City), 
+      arr.ind = TRUE)
+
+layout(c(1,2),1,2) #one beside the other
+
+plot(TwoS$City[-ind],TwoS$Hwy[-ind],
+     main = "Scanner plot",
+     xlab ="city",
+     ylab ="Hwy")
+
+plot(TwoS$City,TwoS$Hwy,
+     main ="Scatter plot without the outlier",
+     xlab = "City",
+     ylab = "Hwy")
+
+```
+
+
+>  
+
+## Measuring the strength of the relationship. Pearson's correlation coefficient
+
+>  
+
+```{r }
+### Useful commands and functions:  cov, cor, pairs and all that you know 
+### Write your commands below:
+
+cor(TwoS[,2:3])
+cor(TwoS[-ind,2:3])#without
+
+pairs(TwoS[-ind,2:3])
+
+```
+
+
+
+> Find the correlation between city and highway mileages both with and
+without the outlier. Is there any change?   Explain what happens and why.
+
+> **Answer:** Yes,
+
+
+> Which value is greater? Explain your answer.    
+
+> **Answer:** The one that it is with it.
+
+>  
+
+## Model of the relationship. Linear regression {.tabset .tabset-pills}
+
+
+>  Find the **regression line** for predicting highway mileage
+from city mileage. Find one model with the outlier and other without it.   
+
+
+### Model without the outlier 
+
+> Find the regression line  for predicting highway milage from city mileage.   
+
+```{r eval=FALSE}
+### Useful commands and functions: lm, summary  and all that you know 
+### Write your commands below:
+
+RL.without <- RL <- lm(TwoS$Hwy[-ind] ~ 
+                         TwoS$City[-ind])   ##Y=aX+b
+
+```
+
+
+> **Examining the Outputs of a Linear Regression**     
+
+> Before accepting the result of a linear regression it is important to evaluate its 
+suitability at explaining the data.   
+
+> One way is to examine the **Variability explained by the model**
+
+> The square of the correlation, $r^{2}$, is the fraction of the variation in the values of $Y$ that is explained by the least-squares regression of $Y$ on $X$.
+
+> $r^{2} = \frac{\displaystyle s^{2}_{\hat{Y}}}{\displaystyle s^{2}_{Y}} = \Sexpr{r.2}$   
+
+> 
+
+> Command *summary*   
+
+
+```{r eval=FALSE}
+### Useful commands and functions: lm, summary  and all that you know 
+### Write your commands below:
+
+# multiple-R-squared value?
+
+summary(RL)
+
+coef(RL)
+
+resid(RL)
+
+predict(RL)
+
+
+
+
+```
+
+> 
+
+
+
+> Command *plot*   
+
+```{r eval=FALSE}
+### Useful commands and functions: lm, summary  and all that you know 
+### Write your commands below:
+
+par(mfrow=c(1,1))
+
+plot(RL)
+
+```
+
+
+
+### Model with the outlier 
+
+> Find the regression line   for predicting highway milage from city mileage.   
+
+
+```{r }
+### Useful commands and functions: lm and all that you know 
+### Write your commands below:
+
+RL <- lm(TwoS$Hwy[-ind] ~  TwoS$City[-ind])   ##Y=aX+b
+
+```
+
+
+
+>  Draw both lines in the same graphic. Is there any difference? 
+
+```{r }
+### Useful commands and functions: plot, cor and all that you know 
+### Write your commands below:
+
+plot(RL)
+
+```
+
+
+
+
+### Comparing both models 
+
+> Find the predicted value for observation number 4 using both models.    
+
+
+```{r }
+### Useful commands and functions: plot, cor and all that you know 
+### Write your commands below:
+
+predict(RL)
+
+```
+
+
+> Find the residual value for observation number 4 using both models.     
+
+
+
+```{r }
+### Useful commands and functions: plot, cor and all that you know 
+### Write your commands below:
+
+resid(RL)
+```
+
+
+
+
